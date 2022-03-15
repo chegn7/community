@@ -1,6 +1,7 @@
 package com.c.community;
 
 import com.c.community.dao.DiscussPostMapper;
+import com.c.community.dao.LoginTicketMapper;
 import com.c.community.dao.UserMapper;
 import com.c.community.entity.User;
 import org.junit.jupiter.api.Test;
@@ -47,4 +48,9 @@ public class MapperTests {
         System.out.println(discussPostMapper.selectDiscussPostRows(0));
         System.out.println(discussPostMapper.selectDiscussPosts(0, 0, 10));
     }
+
+    @Autowired
+    LoginTicketMapper loginTicketMapper;
+
+
 }

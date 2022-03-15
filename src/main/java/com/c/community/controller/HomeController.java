@@ -1,7 +1,7 @@
 package com.c.community.controller;
 
-import com.c.community.Service.DiscussPostService;
-import com.c.community.Service.UserService;
+import com.c.community.service.DiscussPostService;
+import com.c.community.service.UserService;
 import com.c.community.entity.DiscussPost;
 import com.c.community.entity.Page;
 import com.c.community.entity.User;
@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

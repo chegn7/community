@@ -1,8 +1,7 @@
-package com.c.community.Service;
+package com.c.community.service;
 
 import com.c.community.dao.AlphaDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

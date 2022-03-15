@@ -166,3 +166,29 @@ IoC容器，是实现依赖注入的关键，本质上是一个工厂
 
 
 
+
+
+分布式session
+
+粘性session
+
+同步session
+
+session服务器
+
+数据库集群存储session（redis）
+
+
+
+
+
+前端交互，可以把参数装到model里，也可以用request取值
+
+
+
+
+
+显示登录信息
+
+拦截器 降低耦合度
+

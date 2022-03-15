@@ -1,4 +1,4 @@
-package com.c.community.Service;
+package com.c.community.service;
 
 import com.c.community.dao.DiscussPostMapper;
 import com.c.community.entity.DiscussPost;
