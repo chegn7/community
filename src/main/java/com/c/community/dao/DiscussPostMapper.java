@@ -27,4 +27,10 @@ public interface DiscussPostMapper {
      * @return
      */
     int selectDiscussPostRows(@Param("userId") int userId);
+
+    int insertDiscussPost(DiscussPost discussPost);
+
+    DiscussPost selectByPostId(int id);
+
+    int updateCommentCount(int id, int commentCount);
 }

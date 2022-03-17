@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.c.community.dao.CommentMapper">
+    <insert id="addComment" parameterType="com.c.community.entity.Comment" keyProperty="id">
+        insert into comment (user_id, entity_type, entity_id, target_id, content, status, create_time)
+        values (#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime});
+    </insert>
+
+    <select id="selectCommentsByEntity" resultType="com.c.community.entity.Comment">
+        select id,
+               user_id,
+               entity_type,
+               entity_id,
+               target_id,
+               content,
+               status,
+               create_time
+        from comment
+        where entity_id = #{entityId}
+          and entity_type = #{entityType}
+          and status = 0
+        order by create_time asc
+        limit #{offset}, #{limit}
+    </select>
+    <select id="selectCommentsCountByEntity" resultType="java.lang.Integer">
+        select count(id)
+        from comment
+        where entity_id = #{entityId}
+          and entity_type = #{entityType}
+          and status = 0
+    </select>
+</mapper>

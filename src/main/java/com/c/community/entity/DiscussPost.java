@@ -7,11 +7,11 @@ public class DiscussPost {
     Integer userId;
     String title;
     String content;
-    Integer type;
-    Integer status;
+    Integer type = 0;
+    Integer status = 0;
     Date createTime;
-    Integer commentCount;
-    Double score;
+    Integer commentCount = 0;
+    Double score = 0.0;
 
     public Integer getId() {
         return id;

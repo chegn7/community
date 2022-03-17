@@ -2,8 +2,11 @@ package com.c.community.service;
 
 import com.c.community.dao.DiscussPostMapper;
 import com.c.community.entity.DiscussPost;
+import com.c.community.util.CommunityUtil;
+import com.c.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
 public class DiscussPostService {
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     /**
      * 根据输入的userId，offset，limit查询已发的非黑名单内的帖子
@@ -26,5 +32,26 @@ public class DiscussPostService {
 
     public int findDiscussPostRows(int userId) {
         return discussPostMapper.selectDiscussPostRows(userId);
+    }
+
+    public int addDiscussPost(DiscussPost discussPost) {
+        if (discussPost == null) throw new IllegalArgumentException("帖子不能为空！");
+        // 防止script注入
+        // 转义html标记
+        discussPost.setTitle(HtmlUtils.htmlEscape(discussPost.getTitle()));
+        discussPost.setContent(HtmlUtils.htmlEscape(discussPost.getContent()));
+        // 过滤敏感词
+        discussPost.setTitle(sensitiveFilter.filter(discussPost.getTitle()));
+        discussPost.setContent(sensitiveFilter.filter(discussPost.getContent()));
+
+        return discussPostMapper.insertDiscussPost(discussPost);
+    }
+
+    public DiscussPost findPost(int id) {
+        return discussPostMapper.selectByPostId(id);
+    }
+
+    public int updateCommentCount(int id, int commentCount) {
+        return discussPostMapper.updateCommentCount(id, commentCount);
     }
 }

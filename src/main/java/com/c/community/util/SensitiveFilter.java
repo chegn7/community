@@ -49,7 +49,6 @@ public class SensitiveFilter {
         if (StringUtils.isBlank(text)) return null;
         char[] chars = text.toCharArray();
         int n = chars.length;
-        System.out.println(n);
         TrieNode cur = root;
         int start = 0, end = 0;
         StringBuilder stringBuilder = new StringBuilder();
@@ -66,8 +65,8 @@ public class SensitiveFilter {
             }
             cur = cur.getTrieNode(c);
             if (cur == null) {
-                // chars[start, end] 非敏感词
-                stringBuilder.append(text.substring(start, end + 1));
+                // chars[start, end] 非敏感词，移动start
+                stringBuilder.append(chars[start]);
                 end = ++start;
                 cur = root;
             } else if (cur.isEnd) {

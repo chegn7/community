@@ -122,6 +122,7 @@ public class LoginController {
         // 检查账号、密码
         int expiredSeconds = isRemembered ? IS_REMEMBERED_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
         Map<String, Object> map = userService.login(username, password, expiredSeconds);
+//        System.out.println(map);
         // service返回的map如果有ticket表示登录
         if (map.containsKey("ticket")) {
             //把这个ticket发给客户端让客户端保存

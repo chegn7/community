@@ -17,7 +17,7 @@ class SensitiveFilterTest {
 
     @Test
     void filter() {
-        String text = "2开*票附件嚄i";
+        String text = "2开票开开*票附件嚄i";
         String filter = sensitiveFilter.filter(text);
         System.out.println(filter.length());
         System.out.println(filter);

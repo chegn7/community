@@ -40,7 +40,13 @@ public class UserService {
     private String contextPath;
 
     public User findUser(int userId) {
+        if (userId <= 0) return null;
         return userMapper.selectById(userId);
+    }
+
+    public User findUser(String username) {
+        if (StringUtils.isBlank(username)) return null;
+        return userMapper.selectByUsername(username);
     }
 
     public Map<String, Object> register(User user) {
@@ -128,7 +134,8 @@ public class UserService {
             map.put("usernameMsg", "账号未激活");
             return map;
         }
-        password = CommunityUtil.md5(password + user.getSalt());
+        System.out.println("password:" + password);
+//        password = CommunityUtil.md5(password + user.getSalt());
         if (!validatePassword(password, user)) {
             map.put("passwordMsg", "密码不正确");
             return map;
