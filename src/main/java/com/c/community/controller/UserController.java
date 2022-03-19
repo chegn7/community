@@ -3,7 +3,10 @@ package com.c.community.controller;
 import com.c.community.annotation.LoginRequired;
 import com.c.community.entity.LoginTicket;
 import com.c.community.entity.User;
+import com.c.community.service.FollowService;
+import com.c.community.service.LikeService;
 import com.c.community.service.UserService;
+import com.c.community.util.CommunityConstant;
 import com.c.community.util.CommunityUtil;
 import com.c.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +47,12 @@ public class UserController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
 
     // 用户设置页面
@@ -125,8 +134,7 @@ public class UserController {
         if (userService.validatePassword(originalPassword, user)) {
             newPassword = CommunityUtil.md5(newPassword + user.getSalt());
             userService.updatePassword(userId, newPassword);
-            // 将原ticket设为失效
-            userService.logout(userService.findLoginTicket(userId).getTicket());
+
             model.addAttribute("msg", "修改密码成功，转向登录界面");
             model.addAttribute("target", "/login");
             return "/site/operate-result";
@@ -135,4 +143,37 @@ public class UserController {
             return getSettingPage();
         }
     }
+
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUser(userId);
+        if (user == null) {
+            throw new RuntimeException("该用户不存在");
+        }
+        model.addAttribute("user", user);
+        int userLikeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount", userLikeCount);
+
+        //关注数量
+        long followeeCount = followService.findFolloweeCount(user.getId(), CommunityConstant.ENTITY_USER);
+        //粉丝数量
+        long followerCount = followService.findFollowerCount(CommunityConstant.ENTITY_USER, user.getId());
+        //关注状态
+        User loginUser = hostHolder.getUser();
+
+        int followStatus = CommunityConstant.UNFOLLOW_STATUS;
+        if (loginUser != null) {
+            followStatus = followService.findFollowStatus(loginUser.getId(), CommunityConstant.ENTITY_USER, user.getId());
+        }
+        model.addAttribute("followStatus", followStatus);
+        model.addAttribute("followeeCount", followeeCount);
+        model.addAttribute("followerCount", followerCount);
+        int loginUserId = user.getId();
+        if (loginUser != null) loginUserId = loginUser.getId();
+        model.addAttribute("loginUserId", loginUserId);
+
+        return "/site/profile";
+    }
+
+
 }

@@ -8,6 +8,7 @@ import com.c.community.entity.Page;
 import com.c.community.entity.User;
 import com.c.community.service.CommentService;
 import com.c.community.service.DiscussPostService;
+import com.c.community.service.LikeService;
 import com.c.community.service.UserService;
 import com.c.community.util.CommunityConstant;
 import com.c.community.util.CommunityUtil;
@@ -39,6 +40,9 @@ public class DiscussPostController {
     @Autowired
     HostHolder hostHolder;
 
+    @Autowired
+    LikeService likeService;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     @LoginRequired
@@ -65,6 +69,11 @@ public class DiscussPostController {
         // 查作者
         User user = userService.findUser(discussPost.getUserId());
         model.addAttribute("user", user);
+        // 帖子的赞的信息
+        long likeCount = likeService.likeCount(CommunityConstant.ENTITY_POST, postId);
+        int likeStatus = hostHolder.getUser() == null ? CommunityConstant.DEFAULT_LIKE_STATUS : likeService.findLikeStatus(hostHolder.getUser().getId(), CommunityConstant.ENTITY_POST, postId);
+        model.addAttribute("likeCount", likeCount);
+        model.addAttribute("likeStatus", likeStatus);
 
         // 帖子的评论
         // 评论的分页信息
@@ -83,6 +92,10 @@ public class DiscussPostController {
                 // 评论里包含评论的用户以及评论的内容
                 commentVo.put("user", userService.findUser(comment.getUserId()));
                 commentVo.put("comment", comment);
+                likeCount = likeService.likeCount(CommunityConstant.ENTITY_COMMENT, comment.getId());
+                commentVo.put("likeCount", likeCount);
+                likeStatus = hostHolder.getUser() == null ? CommunityConstant.DEFAULT_LIKE_STATUS : likeService.findLikeStatus(hostHolder.getUser().getId(), CommunityConstant.ENTITY_COMMENT, comment.getId());
+                commentVo.put("likeStatus", likeStatus);
                 // 还要放楼中楼回复，和上面操作类似
                 List<Comment> replysByEntity = commentService.findCommentsByEntity(
                         CommunityConstant.ENTITY_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
@@ -96,6 +109,10 @@ public class DiscussPostController {
                         // 回复里多一个参数是 回复的目标用户
                         User targetUser = userService.findUser(reply.getTargetId());
                         replyVo.put("targetUser", targetUser);
+                        likeCount = likeService.likeCount(CommunityConstant.ENTITY_COMMENT, reply.getId());
+                        replyVo.put("likeCount", likeCount);
+                        likeStatus = hostHolder.getUser() == null ? CommunityConstant.DEFAULT_LIKE_STATUS : likeService.findLikeStatus(hostHolder.getUser().getId(), CommunityConstant.ENTITY_COMMENT, reply.getId());
+                        replyVo.put("likeStatus", likeStatus);
                         //封装好的map要放到list里
                         replyVoList.add(replyVo);
                     }

@@ -1,10 +1,13 @@
 package com.c.community.controller;
 
 import com.c.community.service.DiscussPostService;
+import com.c.community.service.LikeService;
 import com.c.community.service.UserService;
 import com.c.community.entity.DiscussPost;
 import com.c.community.entity.Page;
 import com.c.community.entity.User;
+import com.c.community.util.CommunityConstant;
+import com.c.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,9 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LikeService likeService;
+
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page) {
         // 方法调用前，SpringMVC会自动实例化Model和Page，并将Page注入Model
@@ -41,6 +47,9 @@ public class HomeController {
                 map.put("post", post);
                 User user = userService.findUser(post.getUserId());
                 map.put("user", user);
+
+                long likeCount = likeService.likeCount(CommunityConstant.ENTITY_POST, post.getId());
+                map.put("likeCount", likeCount);
                 discussPosts.add(map);
             }
         }

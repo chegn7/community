@@ -3,6 +3,7 @@ package com.c.community.dao;
 import com.c.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
+@Deprecated
 @Mapper
 public interface LoginTicketMapper {
 

@@ -18,11 +18,15 @@ public interface CommunityConstant {
     /**
      * entityType
      * 帖子 1
+     * 评论/回复 2
+     * 用户 3
      */
     int ENTITY_POST = 1;
     int ENTITY_COMMENT = 2;
+    int ENTITY_USER = 3;
 
     /**
+     * 消息状态
      * 0 未读
      * 1 已读
      * 2 删除
@@ -30,4 +34,25 @@ public interface CommunityConstant {
     int UNREAD_STATUS = 0;
     int READ_STATUS = 1;
     int DELETED_STATUS = 2;
+
+    /**
+     * 赞 状态
+     * 0 未赞
+     * 1 赞
+     * 2 踩
+     */
+    int LIKE_STATUS = 1;
+    int DEFAULT_LIKE_STATUS = 0;
+    int UNLIKE_STATUS = 2;
+
+    /**
+     * 关注状态
+     * 0 未关注
+     * 1 已关注
+     * 2 拉黑
+     */
+    int UNFOLLOW_STATUS = 0;
+    int FOLLOWING_STATUS = 1;
+    int BLOCKED_STATUS = 2;
+
 }

@@ -3,12 +3,15 @@ package com.c.community.controller;
 import com.c.community.entity.User;
 import com.c.community.service.UserService;
 import com.c.community.util.CommunityConstant;
+import com.c.community.util.CommunityUtil;
+import com.c.community.util.RedisKeyUtil;
 import com.google.code.kaptcha.Producer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.c.community.util.CommunityConstant.DEFAULT_EXPIRED_SECONDS;
 import static com.c.community.util.CommunityConstant.IS_REMEMBERED_EXPIRED_SECONDS;
@@ -39,6 +43,9 @@ public class LoginController {
 
     @Value("${server.servlet.context-path}")
     String contextPath;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
     public String getRegisterPage() {
@@ -96,7 +103,17 @@ public class LoginController {
         BufferedImage image = kaptchaProducer.createImage(text);
 
         // 将验证码存入session
-        session.setAttribute("kaptcha", text);
+//        session.setAttribute("kaptcha", text);
+
+        // 生成辨识用户的标识
+        String kaptcherOwner = CommunityUtil.generateUUID();
+        Cookie cookie = new Cookie("kaptcherOwner", kaptcherOwner);
+        cookie.setMaxAge(60);// 60秒有效期
+        cookie.setPath(contextPath);
+        response.addCookie(cookie);
+        // 将验证码存入redis
+        String kaptchaKey = RedisKeyUtil.getKaptcha(kaptcherOwner);
+        redisTemplate.opsForValue().set(kaptchaKey, text, 60, TimeUnit.SECONDS);
 
         // 将图片发送给浏览器
         response.setContentType("image/png");
@@ -111,8 +128,15 @@ public class LoginController {
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(String username, String password, String code,
                         boolean isRemembered, Model model,
-                        HttpSession session, HttpServletResponse response) {
-        String kaptcha = (String) session.getAttribute("kaptcha");
+                        HttpSession session, HttpServletResponse response,
+                        @CookieValue("kaptcherOwner") String kaptcherOwner) {
+//        String kaptcha = (String) session.getAttribute("kaptcha");
+        String kaptcha = null;
+        if (StringUtils.isNotBlank(kaptcherOwner)) {
+            String redisKey = RedisKeyUtil.getKaptcha(kaptcherOwner);
+            kaptcha = (String) redisTemplate.opsForValue().get(redisKey);
+        }
+
         // 检查验证码
         if (StringUtils.isBlank(kaptcha) || StringUtils.isBlank(code) || !kaptcha.equalsIgnoreCase(code)) {
             model.addAttribute("codeMsg", "验证码错误");
