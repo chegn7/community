@@ -21,6 +21,7 @@ public class MessageService {
 
     /**
      * 根据用户的id查询消息列表
+     *
      * @param userId
      * @param offset
      * @param limit
@@ -32,6 +33,7 @@ public class MessageService {
 
     /**
      * 根据会话id查询会话的消息列表
+     *
      * @param conversationId
      * @param offset
      * @param limit
@@ -43,6 +45,7 @@ public class MessageService {
 
     /**
      * 根据用户id查询消息数
+     *
      * @param userId
      * @return
      */
@@ -52,6 +55,7 @@ public class MessageService {
 
     /**
      * 根据会话id查询会话消息数
+     *
      * @param conversationId
      * @return
      */
@@ -61,6 +65,7 @@ public class MessageService {
 
     /**
      * 查询会话未读消息数
+     *
      * @param userId
      * @param conversationId
      * @return
@@ -88,9 +93,21 @@ public class MessageService {
         return messageMapper.updateMessageStatus(ids, CommunityConstant.DELETED_STATUS);
     }
 
+    public Message findLatestNotice(int userId, String topic) {
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
 
+    public int findNoticeCount(int userId, String topic) {
+        return messageMapper.selectNoticeCount(userId, topic);
+    }
 
+    public int findUnreadNoticeCount(int userId, String topic) {
+        return messageMapper.selectUnreadNoticeCount(userId, topic);
+    }
 
+    public List<Message> findNotices(int userId, String topic, int offset, int limit) {
 
+        return messageMapper.selectNotices(userId, topic, offset, limit);
+    }
 
 }

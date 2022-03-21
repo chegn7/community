@@ -29,6 +29,9 @@ public class ServiceAspect {
         //日志格式 [date] user[ip]  access [service name]
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
+        if (attributes == null) {
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();
         String host = request.getRemoteHost();
         String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());

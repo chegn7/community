@@ -2,10 +2,8 @@ package com.c.community.controller;
 
 import com.c.community.annotation.LoginRequired;
 import com.c.community.dao.UserMapper;
-import com.c.community.entity.Comment;
-import com.c.community.entity.DiscussPost;
-import com.c.community.entity.Page;
-import com.c.community.entity.User;
+import com.c.community.entity.*;
+import com.c.community.event.EventProducer;
 import com.c.community.service.CommentService;
 import com.c.community.service.DiscussPostService;
 import com.c.community.service.LikeService;
@@ -43,6 +41,9 @@ public class DiscussPostController {
     @Autowired
     LikeService likeService;
 
+    @Autowired
+    EventProducer eventProducer;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     @LoginRequired
@@ -58,6 +59,14 @@ public class DiscussPostController {
         discussPost.setContent(content);
         discussPost.setCreateTime(new Date());
         discussPostService.addDiscussPost(discussPost);
+
+        // 触发发帖事件
+        Event event = new Event()
+                .setTopic(CommunityConstant.TOPIC_PUBLISH_POST)
+                .setUserId(user.getId())
+                .setEntityType(CommunityConstant.ENTITY_POST)
+                .setEntityId(discussPost.getId());
+        eventProducer.fireEvent(event);
         // 报错之后统一处理
         return CommunityUtil.getJSONString(0, "发布成功");
     }

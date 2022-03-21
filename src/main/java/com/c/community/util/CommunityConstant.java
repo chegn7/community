@@ -55,4 +55,14 @@ public interface CommunityConstant {
     int FOLLOWING_STATUS = 1;
     int BLOCKED_STATUS = 2;
 
+    /**
+     * Event topics
+     */
+    String TOPIC_COMMENT = "comment";
+    String TOPIC_LIKE = "like";
+    String TOPIC_FOLLOW = "follow";
+    String TOPIC_PUBLISH_POST = "publish";
+
+    int SYSTEM_USER_ID = 1;
+
 }

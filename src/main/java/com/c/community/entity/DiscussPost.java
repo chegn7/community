@@ -1,16 +1,42 @@
 package com.c.community.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
+
 import java.util.Date;
 
+@Setting(shards = 6, replicas = 2)
+@Document(indexName = "discusspost")
 public class DiscussPost {
+
+    @Id
     Integer id;
+
+    @Field(type = FieldType.Integer)
     Integer userId;
+
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     String title;
+
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart")
     String content;
+
+    @Field(type = FieldType.Integer)
     Integer type = 0;
+
+    @Field(type = FieldType.Integer)
     Integer status = 0;
+
+    @Field(type = FieldType.Date)
     Date createTime;
+
+    @Field(type = FieldType.Integer)
     Integer commentCount = 0;
+
+    @Field(type = FieldType.Double)
     Double score = 0.0;
 
     public Integer getId() {

@@ -1,8 +1,10 @@
 package com.c.community.controller;
 
 import com.c.community.annotation.LoginRequired;
+import com.c.community.entity.Event;
 import com.c.community.entity.Page;
 import com.c.community.entity.User;
+import com.c.community.event.EventProducer;
 import com.c.community.service.FollowService;
 import com.c.community.service.UserService;
 import com.c.community.util.CommunityConstant;
@@ -23,6 +25,9 @@ import java.util.Map;
 public class FollowController {
 
     @Autowired
+    EventProducer producer;
+
+    @Autowired
     FollowService followService;
 
     @Autowired
@@ -37,6 +42,15 @@ public class FollowController {
     public String follow(int entityType, int entityId) {
         User user = hostHolder.getUser();
         followService.follow(user.getId(), entityType, entityId);
+        Event event = new Event().setTopic(CommunityConstant.TOPIC_FOLLOW)
+                .setUserId(user.getId())
+                .setEntityType(CommunityConstant.ENTITY_USER)
+                .setEntityId(entityId)
+                .setEntityUserId(entityId)
+                .setData("postId", user.getId());//此处的帖子id即为发起关注的用户的id
+
+        producer.fireEvent(event);
+
 
         return CommunityUtil.getJSONString(0, "关注成功");
     }

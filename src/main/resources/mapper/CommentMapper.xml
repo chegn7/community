@@ -31,4 +31,16 @@
           and entity_type = #{entityType}
           and status = 0
     </select>
+    <select id="selectCommentByEntityId" resultType="com.c.community.entity.Comment">
+        select id,
+               user_id,
+               entity_type,
+               entity_id,
+               target_id,
+               content,
+               status,
+               create_time
+        from comment
+        where id = #{id}
+    </select>
 </mapper>
