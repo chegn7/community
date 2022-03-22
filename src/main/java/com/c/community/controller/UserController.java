@@ -117,32 +117,32 @@ public class UserController {
         }
     }
 
-    @LoginRequired
-    @RequestMapping(path = "/update_password", method = RequestMethod.POST)
-    public String updatePassword(String originalPassword, String newPassword, Model model) {
-        if (StringUtils.isBlank(originalPassword)) {
-            model.addAttribute("error", "原密码不能为空");
-            return getSettingPage();
-        }
-        if (StringUtils.isBlank(newPassword)) {
-            model.addAttribute("error", "新密码不能为空");
-            return getSettingPage();
-        }
-        // 验证原密码是否正确
-        User user = hostHolder.getUser();
-        int userId = user.getId();
-        if (userService.validatePassword(originalPassword, user)) {
-            newPassword = CommunityUtil.md5(newPassword + user.getSalt());
-            userService.updatePassword(userId, newPassword);
-
-            model.addAttribute("msg", "修改密码成功，转向登录界面");
-            model.addAttribute("target", "/login");
-            return "/site/operate-result";
-        } else {
-            model.addAttribute("error", "原密码错误");
-            return getSettingPage();
-        }
-    }
+//    @LoginRequired
+//    @RequestMapping(path = "/update_password", method = RequestMethod.POST)
+//    public String updatePassword(String originalPassword, String newPassword, Model model) {
+//        if (StringUtils.isBlank(originalPassword)) {
+//            model.addAttribute("error", "原密码不能为空");
+//            return getSettingPage();
+//        }
+//        if (StringUtils.isBlank(newPassword)) {
+//            model.addAttribute("error", "新密码不能为空");
+//            return getSettingPage();
+//        }
+//        // 验证原密码是否正确
+//        User user = hostHolder.getUser();
+//        int userId = user.getId();
+//        if (userService.validatePassword(originalPassword, user)) {
+//            newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+//            userService.updatePassword(userId, newPassword);
+//
+//            model.addAttribute("msg", "修改密码成功，转向登录界面");
+//            model.addAttribute("target", "/login");
+//            return "/site/operate-result";
+//        } else {
+//            model.addAttribute("error", "原密码错误");
+//            return getSettingPage();
+//        }
+//    }
 
     @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
     public String getProfilePage(@PathVariable("userId") int userId, Model model) {
