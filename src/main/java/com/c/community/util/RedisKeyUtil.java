@@ -20,6 +20,9 @@ public class RedisKeyUtil {
 
     private static final String PREFIX_USER = "user";
 
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
+
 
     // 点赞实体的key
     // like:entity:entityType:entityId -> set(userId)
@@ -36,6 +39,7 @@ public class RedisKeyUtil {
     /**
      * 获得用户关注的实体的键名
      * followee:userId:entityType -> zset(entityId, dateTime)
+     *
      * @param userId
      * @param entityType
      * @return
@@ -47,6 +51,7 @@ public class RedisKeyUtil {
     /**
      * 获得某个实体的粉丝的键名
      * follower:entityId:entityType -> zset(userId, dateTime)
+     *
      * @param entityType
      * @param entityId
      * @return
@@ -66,5 +71,23 @@ public class RedisKeyUtil {
     public static String getUser(int userId) {
         return PREFIX_USER + SPLIT + userId;
     }
+    // 单日uv
+    public static String getUVKey(String date) {
+        return PREFIX_UV + SPLIT + date;
+    }
+    // 区间uv
+    public static String getUVkey(String startDate, String endDate) {
+        return PREFIX_UV + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    // 单日dau
+    public static String getDAUKey(String date) {
+        return PREFIX_DAU + SPLIT + date;
+    }
+    // 区间dau
+    public static String getDAUkey(String startDate, String endDate) {
+        return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
 
 }
