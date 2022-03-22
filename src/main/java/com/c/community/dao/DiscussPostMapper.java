@@ -18,14 +18,15 @@ public interface DiscussPostMapper {
      */
     // List是Java自带的类，不用声明也可以检测到。
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
-    //@Param 注解用于给参数取别名
-    //如果只有一个参数，并且在<if>里使用，就必须加别名
+
 
     /**
      * 查询userId用户发的帖子总数
      * @param userId
      * @return
      */
+    //@Param 注解用于给参数取别名
+    //如果只有一个参数，并且在<if>里使用，就必须加别名
     int selectDiscussPostRows(@Param("userId") int userId);
 
     int insertDiscussPost(DiscussPost discussPost);
@@ -33,5 +34,14 @@ public interface DiscussPostMapper {
     DiscussPost selectByPostId(int id);
 
     int updateCommentCount(int id, int commentCount);
+
+    // 置顶
+    int updateType(int id, int type);
+
+    // 加精
+    int updateStatus(int id, int status);
+
+    // 删除
+
 
 }

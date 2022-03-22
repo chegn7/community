@@ -31,18 +31,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/user/setting",
                         "/user/upload",
-                        "/comment/add/**",
+                        "/comment/add**",
                         "/discuss/add",
                         "/follow",
                         "/unfollow",
                         "/like",
-                        "/letter/**",
-                        "/notice/**",
+                        "/letter**",
+                        "/notice**",
                         "/search"
                 ).hasAnyAuthority(CommunityConstant.AUTHORITY_USER,
                         CommunityConstant.AUTHORITY_ADMIN,
                         CommunityConstant.AUTHORITY_MODERATOR)
-                .anyRequest().permitAll();
+                .antMatchers("/discuss/delete")
+                .hasAnyAuthority(CommunityConstant.AUTHORITY_ADMIN)
+                .antMatchers("/discuss/top", "/discuss/wonderful")
+                .hasAnyAuthority(CommunityConstant.AUTHORITY_ADMIN,
+                        CommunityConstant.AUTHORITY_MODERATOR)
+                .anyRequest().permitAll()
+                .and().csrf().disable();// 禁用了，不一一去设置csrf防御
 
         // 权限不足的处理
         http.exceptionHandling()

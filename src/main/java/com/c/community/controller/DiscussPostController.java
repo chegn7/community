@@ -137,4 +137,58 @@ public class DiscussPostController {
         model.addAttribute("comments", commentVoList);
         return "site/discuss-detail";
     }
+
+    /**
+     * 置顶帖子
+     * @param id
+     * @return
+     */
+    @RequestMapping(path = "/top", method = RequestMethod.POST)
+    @ResponseBody
+    public String setTop(int id) {
+        discussPostService.updateType(id, 1);
+        Event event = new Event()
+                .setTopic(CommunityConstant.TOPIC_PUBLISH_POST)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(CommunityConstant.ENTITY_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
+
+    /**
+     * 加精
+     * @param id
+     * @return
+     */
+    @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
+    @ResponseBody
+    public String setWonderful(int id) {
+        discussPostService.updateStatus(id, 1);
+        Event event = new Event()
+                .setTopic(CommunityConstant.TOPIC_PUBLISH_POST)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(CommunityConstant.ENTITY_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String setDelete(int id) {
+        discussPostService.updateStatus(id, 2);
+        Event event = new Event()
+                .setTopic(CommunityConstant.TOPIC_DELETE_POST)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityType(CommunityConstant.ENTITY_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+        return CommunityUtil.getJSONString(0);
+    }
 }

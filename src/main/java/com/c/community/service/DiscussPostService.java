@@ -6,6 +6,9 @@ import com.c.community.util.CommunityUtil;
 import com.c.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
@@ -54,4 +57,12 @@ public class DiscussPostService {
     public int updateCommentCount(int id, int commentCount) {
         return discussPostMapper.updateCommentCount(id, commentCount);
     }
+
+    public int updateType(int id, int type) {
+        return discussPostMapper.updateType(id, type);
+    }
+    public int updateStatus(int id, int status) {
+        return discussPostMapper.updateStatus(id, status);
+    }
+
 }

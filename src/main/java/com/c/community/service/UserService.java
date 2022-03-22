@@ -165,7 +165,6 @@ public class UserService {
             map.put("usernameMsg", "账号未激活");
             return map;
         }
-        System.out.println("password:" + password);
 //        password = CommunityUtil.md5(password + user.getSalt());
         if (!validatePassword(password, user)) {
             map.put("passwordMsg", "密码不正确");
@@ -231,10 +230,13 @@ public class UserService {
             public String getAuthority() {
                 switch (user.getType()) {
                     case 1 :
+                        System.out.println("admin");
                         return CommunityConstant.AUTHORITY_ADMIN;
                     case 2:
+                        System.out.println("moderator");
                         return CommunityConstant.AUTHORITY_MODERATOR;
                     default:
+                        System.out.println("user");
                         return CommunityConstant.AUTHORITY_USER;
                 }
             }

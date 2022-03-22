@@ -78,4 +78,18 @@ public class EventConsumer {
 
     }
 
+    @KafkaListener(topics = {CommunityConstant.TOPIC_DELETE_POST})
+    public void handleDeletePostEvent(ConsumerRecord record) {
+        if (record == null || record.value() == null) {
+            LOGGER.error("消息为空");
+            return;
+        }
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        if (event == null) {
+            LOGGER.error("消息格式错误");
+            return;
+        }
+        elasticSearchService.deleteDiscussPost(event.getEntityId());
+    }
+
 }
