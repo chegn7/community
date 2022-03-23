@@ -11,7 +11,9 @@ import com.c.community.service.UserService;
 import com.c.community.util.CommunityConstant;
 import com.c.community.util.CommunityUtil;
 import com.c.community.util.HostHolder;
+import com.c.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,9 @@ public class DiscussPostController {
     @Autowired
     EventProducer eventProducer;
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
     @LoginRequired
@@ -68,6 +73,11 @@ public class DiscussPostController {
                 .setEntityId(discussPost.getId());
         eventProducer.fireEvent(event);
         // 报错之后统一处理
+
+        // 将帖子存入redis缓存
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, discussPost.getId());
+
         return CommunityUtil.getJSONString(0, "发布成功");
     }
 
@@ -171,6 +181,10 @@ public class DiscussPostController {
                 .setEntityType(CommunityConstant.ENTITY_POST)
                 .setEntityId(id);
         eventProducer.fireEvent(event);
+
+        // 将帖子存入redis缓存
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, id);
         return CommunityUtil.getJSONString(0);
     }
 

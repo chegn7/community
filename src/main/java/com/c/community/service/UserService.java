@@ -230,13 +230,10 @@ public class UserService {
             public String getAuthority() {
                 switch (user.getType()) {
                     case 1 :
-                        System.out.println("admin");
                         return CommunityConstant.AUTHORITY_ADMIN;
                     case 2:
-                        System.out.println("moderator");
                         return CommunityConstant.AUTHORITY_MODERATOR;
                     default:
-                        System.out.println("user");
                         return CommunityConstant.AUTHORITY_USER;
                 }
             }

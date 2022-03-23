@@ -14,10 +14,11 @@ public interface DiscussPostMapper {
      * @param userId 用户id
      * @param offset 起始行行号，注意，第一行offset为0
      * @param limit 每页显示的帖子数量
+     * @param orderMode 排序模式，默认0按时间，1按热度
      * @return 帖子列表
      */
     // List是Java自带的类，不用声明也可以检测到。
-    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit, int orderMode);
 
 
     /**
@@ -34,6 +35,8 @@ public interface DiscussPostMapper {
     DiscussPost selectByPostId(int id);
 
     int updateCommentCount(int id, int commentCount);
+
+    int updateScore(int id, double score);
 
     // 置顶
     int updateType(int id, int type);

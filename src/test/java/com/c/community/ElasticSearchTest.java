@@ -79,7 +79,7 @@ public class ElasticSearchTest {
     @Test
     void testInsertList() {
         for (int i = 101; i < 133; i++) {
-            discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(i, 0, 100));
+//            discussPostRepository.saveAll(discussPostMapper.selectDiscussPosts(i, 0, 100));
         }
 
     }

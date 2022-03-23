@@ -9,7 +9,9 @@ import com.c.community.service.LikeService;
 import com.c.community.util.CommunityConstant;
 import com.c.community.util.CommunityUtil;
 import com.c.community.util.HostHolder;
+import com.c.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +30,8 @@ public class LikeController {
     LikeService likeService;
     @Autowired
     CommentService commentService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @LoginRequired
     @RequestMapping(path = "/like", method = RequestMethod.POST)
@@ -52,6 +56,12 @@ public class LikeController {
                     .setEntityUserId(entityCreateUserId)
                     .setData("postId", postId);
             producer.fireEvent(event);
+        }
+
+        if (entityType == CommunityConstant.ENTITY_POST) {
+            // 将帖子存入redis缓存
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey, postId);
         }
 
         return CommunityUtil.getJSONString(0, map);

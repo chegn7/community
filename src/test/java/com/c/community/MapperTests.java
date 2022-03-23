@@ -46,7 +46,7 @@ public class MapperTests {
     @Test
     public void testSelectPost() {
         System.out.println(discussPostMapper.selectDiscussPostRows(0));
-        System.out.println(discussPostMapper.selectDiscussPosts(0, 0, 10));
+//        System.out.println(discussPostMapper.selectDiscussPosts(0, 0, 10));
     }
 
     @Autowired

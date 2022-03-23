@@ -10,7 +10,9 @@ import com.c.community.service.CommentService;
 import com.c.community.service.DiscussPostService;
 import com.c.community.util.CommunityConstant;
 import com.c.community.util.HostHolder;
+import com.c.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,9 @@ public class CommentController {
 
     @Autowired
     DiscussPostService discussPostService;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
 
     @LoginRequired
@@ -68,6 +73,9 @@ public class CommentController {
                     .setEntityId(discussPostId)
                     .setUserId(comment.getUserId());
             producer.fireEvent(event);
+            // 将帖子存入redis缓存
+            String redisKey = RedisKeyUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
         return "redirect:/discuss/detail/" + discussPostId;
     }
