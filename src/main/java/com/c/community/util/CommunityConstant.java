@@ -63,6 +63,7 @@ public interface CommunityConstant {
     String TOPIC_FOLLOW = "follow";
     String TOPIC_PUBLISH_POST = "publish";
     String TOPIC_DELETE_POST = "delete";
+    String TOPIC_SHARE = "share";
 
     int SYSTEM_USER_ID = 1;
 

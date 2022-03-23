@@ -12,9 +12,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,10 @@ public class EventConsumer {
     private DiscussPostService discussPostService;
     @Autowired
     private ElasticSearchService elasticSearchService;
+    @Value("${wk.image.storage}")
+    String wkImageStoragePath;
+    @Value("${wk.image.command}")
+    String wkCmd;
 
     @KafkaListener(topics = {CommunityConstant.TOPIC_COMMENT, CommunityConstant.TOPIC_FOLLOW, CommunityConstant.TOPIC_LIKE})
     public void handleEvent(ConsumerRecord record) {
@@ -90,6 +96,29 @@ public class EventConsumer {
             return;
         }
         elasticSearchService.deleteDiscussPost(event.getEntityId());
+    }
+
+    @KafkaListener(topics = {CommunityConstant.TOPIC_SHARE})
+    public void handleShareEvent(ConsumerRecord record) {
+        if (record == null || record.value() == null) {
+            LOGGER.error("消息为空");
+            return;
+        }
+        Event event = JSONObject.parseObject(record.value().toString(), Event.class);
+        if (event == null) {
+            LOGGER.error("消息格式错误");
+            return;
+        }
+        String htmlUrl = (String) event.getData().get("htmlUrl");
+        String fileName = (String) event.getData().get("fileName");
+        String suffix = (String) event.getData().get("suffix");
+        String cmd = wkCmd + " --quality 75 " + htmlUrl + " " + wkImageStoragePath + "/" + fileName + suffix;
+        try {
+            Runtime.getRuntime().exec(cmd);
+            LOGGER.info("生成长图成功:" + cmd);
+        } catch (IOException e) {
+            LOGGER.info("生成长图失败:" + e.getMessage());
+        }
     }
 
 }
