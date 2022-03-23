@@ -25,6 +25,9 @@ public class RedisKeyUtil {
 
     private static final String PREFIX_POST = "post";
 
+    private static final String PREFIX_CACHE_POST_LIST = "cache:post:list";
+    private static final String PREFIX_CACHE_POST_ROWS = "cache:post:rows";
+
 
     // 点赞实体的key
     // like:entity:entityType:entityId -> set(userId)
@@ -93,6 +96,14 @@ public class RedisKeyUtil {
 
     public static String getPostScoreKey() {
         return PREFIX_POST + SPLIT + "score";
+    }
+
+    public static String getPostListCacheKey(int offset, int limit) {
+        return PREFIX_CACHE_POST_LIST + SPLIT + offset + SPLIT + limit;
+    }
+
+    public static String getPostRowsCacheKey(int userId) {
+        return PREFIX_CACHE_POST_ROWS + SPLIT + userId;
     }
 
 
