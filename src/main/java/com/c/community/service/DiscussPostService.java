@@ -1,5 +1,6 @@
 package com.c.community.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.c.community.dao.DiscussPostMapper;
 import com.c.community.entity.DiscussPost;
 import com.c.community.util.CommunityUtil;
@@ -72,11 +73,12 @@ public class DiscussPostService {
                         int limit = Integer.parseInt(params[1]);
                         // 二级缓存 访问redis
                         String redisKey = RedisKeyUtil.getPostListCacheKey(offset, limit);
-                        List<DiscussPost> posts = (List<DiscussPost>) redisTemplate.opsForValue().get(redisKey);
+                        JSONObject.parseObject((String) redisTemplate.opsForValue().get(redisKey));
+                        List<DiscussPost> posts = (List<DiscussPost>) JSONObject.parseObject((String) redisTemplate.opsForValue().get(redisKey));
                         if (posts == null) {
                             LOGGER.debug("can not found in Redis, select posts from DB");
                             posts = discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
-                            redisTemplate.opsForValue().set(redisKey, posts, expreSeconds, TimeUnit.SECONDS);
+                            redisTemplate.opsForValue().set(redisKey, JSONObject.toJSONString(posts), expreSeconds, TimeUnit.SECONDS);
                         }
                         // 无二级缓存
 //                        List<DiscussPost> posts = discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
